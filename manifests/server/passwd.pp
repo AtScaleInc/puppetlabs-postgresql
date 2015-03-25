@@ -5,6 +5,7 @@ class postgresql::server::passwd {
   $user              = $postgresql::server::user
   $group             = $postgresql::server::group
   $psql_path         = $postgresql::server::psql_path
+  $port              = $postgresql::server::port
 
   if($ensure == 'present' or $ensure == true) {
     if ($postgres_password != undef) {
@@ -17,7 +18,7 @@ class postgresql::server::passwd {
       exec { 'set_postgres_postgrespw':
         # This command works w/no password because we run it as postgres system
         # user
-        command     => "${psql_path} -c 'ALTER ROLE \"${user}\" PASSWORD ${escaped}'",
+        command     => "${psql_path} -p $port -c 'ALTER ROLE \"${user}\" PASSWORD ${escaped}'",
         user        => $user,
         group       => $group,
         logoutput   => true,
